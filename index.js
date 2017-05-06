@@ -181,7 +181,10 @@ function addToSupports(id) {
 function createGroup(senderId) {
   var callback = function (err, data) {
     if (err) { return console.error("GOT DATA: " + err); }
-    else { console.log("GOT DATA: " + data); }
+    else {
+      console.log("GOT DATA: " + data);
+      saveGroup(data, senderId);
+    }
   }
   // Supporter.find({}, function(supporterArray){
   //   saveGroup(supporterArray, senderId);
