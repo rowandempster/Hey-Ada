@@ -182,7 +182,7 @@ function addToSupports(id) {
   options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
   // Find the document
-  newSupporter.findOneAndUpdate(query, update, options);
+  Supporter.findOneAndUpdate(query, newSupporter, options);
 }
 
 function createGroup(senderId) {
