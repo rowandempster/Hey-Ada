@@ -200,7 +200,7 @@ function createGroup(senderId) {
       continueFunc();
     }
   }
-  Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
+  Group.find({ "members": { $elemMatch: {"id" : senderId}} }, callbackqueryresult);
 }
 
 function saveGroup(supporterArray, requesterId){
