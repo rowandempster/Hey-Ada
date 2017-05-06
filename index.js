@@ -7,7 +7,7 @@ const app = express()
 const util = require('util')
 // Load mongoose package
 var mongoose = require('mongoose');
-var Supporter = require('models/Supporter.js');
+var Supporter = require('./models/Supporter.js');
 // Connect to MongoDB and create/use database called todoAppTest
 mongoose.connect('mongodb://admin:admin@ds133221.mlab.com:33221/ada_db');
 
