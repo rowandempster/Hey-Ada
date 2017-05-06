@@ -188,13 +188,19 @@ function addToSupports(id) {
 
 function createGroup(senderId) {
   var callback = function (err, data) {
-    if (err) { return console.error("GOT DATA: " + err); }
+    if (err) { return console.error("GOT ERROR: " + err); }
     else {
       console.log("GOT DATA: " + data);
       saveGroup(data, senderId);
     }
   }
-  Supporter.find({"availability" : true}, callback).limit(4);
+  var continueFunc = Supporter.find({"availability" : true}, callback).limit(4);
+  var callbackqueryresult = function (err, result) {
+    if(result == null || err != null){
+      continueFunc();
+    }
+  }
+  Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
 }
 
 function saveGroup(supporterArray, requesterId){
