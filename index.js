@@ -177,7 +177,12 @@ function addToSupports(id) {
     availability: true
   });
   console.log("updating Supporter with: " + newSupporter);
-  newSupporter.update({ upsert: true });
+  var query = {},
+  update = { expire: new Date() },
+  options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+  // Find the document
+  newSupporter.findOneAndUpdate(query, update, options);
 }
 
 function createGroup(senderId) {
@@ -216,10 +221,10 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
     console.log("Logging result", result);
     try{
       result[0].members.forEach(function (groupmember) {
-       sendTextMessage(groupmember.id, text)
+        sendTextMessage(groupmember.id, text)
       })
-  }
-  catch(error){}
+    }
+    catch(error){}
 
   }
   console.log("Making a request to the database", senderid)
