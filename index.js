@@ -54,7 +54,7 @@ app.post('/webhook/', function (req, res) {
         sendTextMessage(sender, "Thank you for offering support, you will receive a notification when you need help.");
         addToSupports(sender);
       }
-      broadcastTextToGroupIfGroupExists(sender, text); 
+      broadcastTextToGroupIfGroupExists(sender, text);
       sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
     }
   }
@@ -214,12 +214,12 @@ function saveGroup(supporterArray, requesterId){
 // supporters.find({group that constais id}, callback)
 function broadcastTextToGroupIfGroupExists(senderid, text) {
   var callbackqueryresult = function (result) {
+    console.log("Logging result", result);
     result.forEach(function (groupmember) {
      sendTextMessage(groupmember.id, text)
     })
-    console.log("Logging result", result);
   }
-  console.log("Making a request to the database")
+  console.log("Making a request to the database", senderid)
   Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
 }
 
