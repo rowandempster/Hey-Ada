@@ -49,11 +49,13 @@ app.post('/webhook/', function (req, res) {
 })
 
 function checkFirstMessage(req){
+  console.log("check first called");
   try{
     if(req.body.entry[0].messaging[0].postback.payload === "Get Started"){
       var options = [];
       options.push("Get help");
       options.push("Support");
+      console.log("done pushing");
       sendOptionMessage(req.body.entry[0].messaging[0].sender.id, options, "What would you like to do?");
     }
   }
@@ -63,6 +65,7 @@ function checkFirstMessage(req){
 }
 
 function sendOptionMessage(sender, options, title){
+  console.log("options called");
   var buttons = [];
   for(var i = 0; i<options.length; i++){
     employees.accounting.push({
@@ -71,6 +74,7 @@ function sendOptionMessage(sender, options, title){
         "payload" : options[i]
     });
   }
+  console.log("buttons: " + buttons);
   let messageData = {
     "attachment":{
       "type":"template",
@@ -81,7 +85,7 @@ function sendOptionMessage(sender, options, title){
       }
     }
   }
-  console.log(messageData);
+  console.log("request" + messageData);
   request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token:token},
