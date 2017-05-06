@@ -54,6 +54,7 @@ app.post('/webhook/', function (req, res) {
         sendTextMessage(sender, "Thank you for offering support, you will receive a notification when you need help.");
         addToSupports(sender);
       }
+      broadcastTextToGroupIfGroupExists(sender, text);
       sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
     }
   }
@@ -175,7 +176,8 @@ function addToSupports(id) {
     id: id,
     availability: true
   });
-  newSupporter.save(function(err){});
+  console.log("updating Supporter with: " + newSupporter);
+  newSupporter.update({ upsert: true });
 }
 
 function createGroup(senderId) {
@@ -209,5 +211,19 @@ function saveGroup(supporterArray, requesterId){
   groupCreated.save(function(err){});
 }
 
+function broadcastTextToGroupIfGroupExists(senderid, text) {
+  var callbackqueryresult = function (err, result) {
+    console.log("Logging result", result);
+    try{
+      result[0].members.forEach(function (groupmember) {
+       sendTextMessage(groupmember.id, text)
+      })
+  }
+  catch(error){}
+
+  }
+  console.log("Making a request to the database", senderid)
+  Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
+}
 
 const token = "EAAWV1QbgKMMBACBKsgZCPgdK9F3tN03SynQrdLybpRz5OrSVZB7Rvxf9frZCxJZBS6X2ViUBtu0jUQWeAE0DPQYYnQX16Xwakyo36hO0MPZBkOuiPCAZCnHJ5hdzlkZAd7PcFDsZBLw0J33NL6d8uQZA0ZBqUVd5OZA5TFyIhiHFEYJqz1gcs2yqRnS"
