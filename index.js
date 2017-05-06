@@ -67,13 +67,13 @@ function checkFirstMessage(req){
 function sendOptionMessage(sender, options, title){
   console.log("options called");
   var buttons = [];
-  for(var i = 0; i<options.length; i++){
-    employees.accounting.push({
+  options.forEach(function(option){
+    buttons.push({
         "type" : "postback",
-        "title" : options[i],
-        "payload" : options[i]
+        "title" : option,
+        "payload" : option
     });
-  }
+  });
   console.log("buttons: " + buttons);
   let messageData = {
     "attachment":{
