@@ -177,12 +177,11 @@ function addToSupports(id) {
     availability: true
   });
   console.log("updating Supporter with: " + newSupporter);
-  var query = {},
-  update = { expire: new Date() },
-  options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
-  // Find the document
-  Supporter.findOneAndUpdate(query, newSupporter, options);
+  Supporter.update(
+    {id: id},
+    {$setOnInsert: newSupporter},
+    {upsert: true});
 }
 
 function createGroup(senderId) {
