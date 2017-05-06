@@ -49,6 +49,7 @@ app.post('/webhook/', function (req, res) {
 })
 
 function checkFirstMessage(req){
+  console.log("first message payload: " + req.body.entry[0].messaging[0].postback.payload);
   if(req.body.entry[0].messaging[0].postback.payload === "Get Started"){
     sendTextMessage(req.body.entry[0].messaging[0].sender, "Getting you started!");
   }
