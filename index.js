@@ -5,8 +5,10 @@ const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
 const util = require('util')
+const testcode = "12345678"
 // Load mongoose package
 var mongoose = require('mongoose');
+var Supporter = require('./models/Supporter.js');
 // Connect to MongoDB and create/use database called todoAppTest
 mongoose.connect('mongodb://admin:admin@ds133221.mlab.com:33221/ada_db');
 
@@ -46,7 +48,11 @@ app.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text
-      sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
+      if (text === testcode) {
+        sendTextMessage(sender, "Thank you for offering support, you will receive a notification when you need help.");
+        addToSupports(sender);
+      }
+      sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
     }
   }
   res.sendStatus(200)
@@ -91,7 +97,7 @@ function helpThem(senderId){
 
 //called when a user clicks the "register for support" onboarding option
 function registerSupporter(senderId){
-  sendTextMessage(senderId, "Registering you");
+  sendTextMessage(senderId, "To offer support, we would like to ask you to participate in a screening process at www.facebook.com/heyada2017. \nIf you have completed a screening process, please send your ID")
 }
 
 function checkPayload(req, payload){
@@ -159,6 +165,14 @@ function sendTextMessage(sender, text) {
       console.log('Error: ', response.body.error)
     }
   })
+}
+
+function addToSupports(id) {
+  var newSupporter = new Supporter ({
+    id: id,
+    availability: true
+  });
+  newSupporter.save(function(err){});
 }
 
 const token = "EAAWV1QbgKMMBACBKsgZCPgdK9F3tN03SynQrdLybpRz5OrSVZB7Rvxf9frZCxJZBS6X2ViUBtu0jUQWeAE0DPQYYnQX16Xwakyo36hO0MPZBkOuiPCAZCnHJ5hdzlkZAd7PcFDsZBLw0J33NL6d8uQZA0ZBqUVd5OZA5TFyIhiHFEYJqz1gcs2yqRnS"
