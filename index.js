@@ -35,7 +35,7 @@ app.listen(app.get('port'), function() {
 
 
 app.post('/webhook/', function (req, res) {
-    // checkFirstMessage(req);
+    checkFirstMessage(req);
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
 	    let event = req.body.entry[0].messaging[i]
@@ -49,7 +49,6 @@ app.post('/webhook/', function (req, res) {
 })
 
 function checkFirstMessage(req){
-  console.log("first message payload: " + req.body.entry[0].messaging[0].postback.payload);
   try{
     if(req.body.entry[0].messaging[0].postback.payload === "Get Started"){
       sendTextMessage(req.body.entry[0].messaging[0].sender.id, "Getting you started!");
