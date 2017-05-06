@@ -175,6 +175,7 @@ function addToSupports(id) {
     id: id,
     availability: true
   });
+  console.log("updating Supporter with: " + newSupporter);
   Supporter.update({'id': id}, newSupporter, { upsert: true });
 }
 
