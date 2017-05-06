@@ -188,6 +188,7 @@ function addToSupports(id) {
 
 function createGroup(senderId) {
   var callback = function (err, data) {
+    if (err) { }
     else {
       saveGroup(data, senderId);
     }
