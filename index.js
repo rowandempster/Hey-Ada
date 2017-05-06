@@ -181,7 +181,7 @@ function addToSupports(id) {
 function createGroup(senderId) {
   Supporter.find({}, function(supporterArray){
     saveGroup(supporterArray, senderId);
-  }).limit(4);
+  });
 }
 
 function saveGroup(supporterArray, requesterId){
