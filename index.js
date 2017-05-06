@@ -50,7 +50,7 @@ app.post('/webhook/', function (req, res) {
       let text = event.message.text
       if (text === testcode) {
         sendTextMessage(sender, "Thank you for offering support, you will receive a notification when you need help.");
-        addToSupports(sender); 
+        addToSupports(sender);
       }
       sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
     }
@@ -97,7 +97,7 @@ function helpThem(senderId){
 
 //called when a user clicks the "register for support" onboarding option
 function registerSupporter(senderId){
-  sendTextMessage(senderId, "To offer support, we would like to ask you to participate in a screening process at url. If you have completed a screening process, please send your ID")
+  sendTextMessage(senderId, "To offer support, we would like to ask you to participate in a screening process at www.facebook.com/heyada2017. \nIf you have completed a screening process, please send your ID")
 }
 
 function checkPayload(req, payload){
