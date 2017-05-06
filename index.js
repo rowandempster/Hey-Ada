@@ -54,8 +54,8 @@ function checkFirstMessage(req){
   try{
     if(req.body.entry[0].messaging[0].postback.payload === "Get Started"){
       var options = [];
-      options.push("I would like\n some help!");
-      options.push("I would like\n to help others!");
+      options.push("Help me!");
+      options.push("Offer support");
       console.log("done pushing");
       sendOptionMessage(req.body.entry[0].messaging[0].sender.id, options, "What would you like to do?");
     }
@@ -67,7 +67,7 @@ function checkFirstMessage(req){
 
 function checkSupport(req){
   try{
-    if(req.body.entry[0].messaging[0].postback.payload === "Support"){
+    if(req.body.entry[0].messaging[0].postback.payload === "Offer support"){
       sendTextMessage(req.body.entry[0].messaging[0].sender.id, "Thanks for giving support!");
     }
   }
