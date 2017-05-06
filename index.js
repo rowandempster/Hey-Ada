@@ -4,6 +4,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
+const util = require('util')
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -34,7 +35,7 @@ app.listen(app.get('port'), function() {
 
 
 app.post('/webhook/', function (req, res) {
-    console.log("webhook got something: " + req.postback);
+    console.log(util.inspect(req, false, null))
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
 	    let event = req.body.entry[0].messaging[i]
