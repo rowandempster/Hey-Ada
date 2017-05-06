@@ -175,7 +175,10 @@ function addToSupports(id) {
     id: id,
     availability: true
   });
-  newSupporter.save(function(err){});
+  newSupporter.update(
+    {$setOnInsert: id},
+    {upsert: true},
+    function(err){});
 }
 
 function createGroup(senderId) {
