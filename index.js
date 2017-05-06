@@ -195,7 +195,7 @@ function createGroup(senderId) {
   }
   var callbackqueryresult = function (err, result) {
     console.log("Got result group" + result);
-    if(error || result == null){
+    if(err || result == null){
       console.log("DIDNT GET RESULT");
       Supporter.find({"availability" : true}, callback).limit(4);
     }
