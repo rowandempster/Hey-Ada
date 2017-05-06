@@ -195,12 +195,10 @@ function createGroup(senderId) {
   }
   var callbackqueryresult = function (err, result) {
     console.log("Got result group " + result);
-    if(result == null){
-      console.log("RESULT WAS NULL");
-      Supporter.find({"availability" : true}, callback).limit(4);
+    if(result){
     }
     else{
-      console.log("RESULT WAS NNOOOTT NULL");
+      Supporter.find({"availability" : true}, callback).limit(4);
     }
   }
   Group.find({ "members": { $elemMatch: {"id" : senderId}} }, callbackqueryresult);
