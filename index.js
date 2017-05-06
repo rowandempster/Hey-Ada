@@ -175,7 +175,7 @@ function addToSupports(id) {
     id: id,
     availability: true
   });
-  Supporter.update({}}, newSupporter, { upsert: true });
+  Supporter.update({}, newSupporter, { upsert: true });
 }
 
 function createGroup(senderId) {
