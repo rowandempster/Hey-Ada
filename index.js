@@ -9,6 +9,8 @@ const testcode = "12345678"
 // Load mongoose package
 var mongoose = require('mongoose');
 var Supporter = require('./models/Supporter.js');
+var GroupMember = require('./models/GroupMember.js');
+var Group = require('./models/Group.js');
 // Connect to MongoDB and create/use database called todoAppTest
 mongoose.connect('mongodb://admin:admin@ds133221.mlab.com:33221/ada_db');
 
@@ -93,6 +95,24 @@ function sendOnboarding(senderId){
 //called when a user clicks the "help me" onboarding option
 function helpThem(senderId){
   sendTextMessage(senderId, "Getting you help!");
+  var groupIds = getGroupArray();
+  var memberModelsArray = [];
+  groupIds.forEach(function(id){
+    var model = new GroupMember({
+        id: id,
+        is_requester: false
+    });
+    memberModelsArray.push(model);
+  });
+  var requesterModel = new GroupMember({
+    id: senderId,
+    is_requester: true
+  });
+  memberModelsArray.push(requesterModel);
+  var groupCreated = new Group({
+    members: memberModelsArray
+  });
+  groupCreated.save(function(err){});
 }
 
 //called when a user clicks the "register for support" onboarding option
@@ -173,6 +193,15 @@ function addToSupports(id) {
     availability: true
   });
   newSupporter.save(function(err){});
+}
+
+function getGroupArray() {
+  var ret = [];
+  var supportersFound = Supporter.find({"availability": true}).limit(4);
+  supportersFound.each(function(supporter){
+    ret.push(supporter.id);
+  });
+  return ret;
 }
 
 const token = "EAAWV1QbgKMMBACBKsgZCPgdK9F3tN03SynQrdLybpRz5OrSVZB7Rvxf9frZCxJZBS6X2ViUBtu0jUQWeAE0DPQYYnQX16Xwakyo36hO0MPZBkOuiPCAZCnHJ5hdzlkZAd7PcFDsZBLw0J33NL6d8uQZA0ZBqUVd5OZA5TFyIhiHFEYJqz1gcs2yqRnS"
