@@ -36,6 +36,7 @@ app.listen(app.get('port'), function() {
 
 app.post('/webhook/', function (req, res) {
   checkFirstMessage(req);
+  checkSupport(req);
   let messaging_events = req.body.entry[0].messaging
   for (let i = 0; i < messaging_events.length; i++) {
     let event = req.body.entry[0].messaging[i]
@@ -53,10 +54,21 @@ function checkFirstMessage(req){
   try{
     if(req.body.entry[0].messaging[0].postback.payload === "Get Started"){
       var options = [];
-      options.push("Get help");
-      options.push("Support");
+      options.push("I would like some help!");
+      options.push("I would like to help others!");
       console.log("done pushing");
       sendOptionMessage(req.body.entry[0].messaging[0].sender.id, options, "What would you like to do?");
+    }
+  }
+  catch(err){
+
+  }
+}
+
+function checkSupport(req){
+  try{
+    if(req.body.entry[0].messaging[0].postback.payload === "Support"){
+      sendTextMessage(req.body.entry[0].messaging[0].sender.id, "Thanks for giving support!");
     }
   }
   catch(err){
