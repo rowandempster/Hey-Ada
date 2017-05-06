@@ -195,10 +195,11 @@ function createGroup(senderId) {
   }
   var callbackqueryresult = function (err, result) {
     console.log("Got result group " + result);
-    if(result){
+    try{
+      result[0];
       console.log("GOT RESULT");
     }
-    else{
+    catch(err){
       console.log("DIDNT GET RESULT");
       Supporter.find({"availability" : true}, callback).limit(4);
     }
