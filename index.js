@@ -213,7 +213,7 @@ function saveGroup(supporterArray, requesterId){
 
 // supporters.find({group that constais id}, callback)
 function broadcastTextToGroupIfGroupExists(senderid, text) {
-  var callbackqueryresult = function (result) {
+  var callbackqueryresult = function (err, result) {
     console.log("Logging result", result);
     // result.forEach(function (groupmember) {
     //  sendTextMessage(groupmember.id, text)
