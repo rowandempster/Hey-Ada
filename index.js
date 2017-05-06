@@ -7,6 +7,7 @@ const app = express()
 const util = require('util')
 // Load mongoose package
 var mongoose = require('mongoose');
+var Supporter = require('../models/Supporter.js');
 // Connect to MongoDB and create/use database called todoAppTest
 mongoose.connect('mongodb://admin:admin@ds133221.mlab.com:33221/ada_db');
 
@@ -91,7 +92,11 @@ function helpThem(senderId){
 
 //called when a user clicks the "register for support" onboarding option
 function registerSupporter(senderId){
-  sendTextMessage(senderId, "Registering you");
+  var newSupporter = new Supporter ({
+    id: senderId,
+    availability: true
+  });
+  newSupporter.save(function(err){});
 }
 
 function checkPayload(req, payload){
