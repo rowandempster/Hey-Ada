@@ -95,24 +95,7 @@ function sendOnboarding(senderId){
 //called when a user clicks the "help me" onboarding option
 function helpThem(senderId){
   sendTextMessage(senderId, "Getting you help!");
-  var groupIds = getGroupArray();
-  var memberModelsArray = [];
-  groupIds.forEach(function(id){
-    var model = new GroupMember({
-        id: id,
-        is_requester: false
-    });
-    memberModelsArray.push(model);
-  });
-  var requesterModel = new GroupMember({
-    id: senderId,
-    is_requester: true
-  });
-  memberModelsArray.push(requesterModel);
-  var groupCreated = new Group({
-    members: memberModelsArray
-  });
-  groupCreated.save(function(err){});
+  createGroup(senderId);
 }
 
 //called when a user clicks the "register for support" onboarding option
@@ -195,13 +178,30 @@ function addToSupports(id) {
   newSupporter.save(function(err){});
 }
 
-function getGroupArray() {
-  var ret = [];
-  var supportersFound = Supporter.find({"availability": true}).limit(4);
-  supportersFound.each(function(supporter){
-    ret.push(supporter.id);
+function createGroup(senderId) {
+  Supporter.find({"availability": true}, function(supporterArray){
+    saveGroup(supporterArray, senderId);
+  }).limit(4);
+}
+
+function saveGroup(supporterArray, requesterId){
+  var memberModelsArray = [];
+  supporterArray.forEach(function(supporter){
+    var model = new GroupMember({
+        id: supporter.id,
+        is_requester: false
+    });
+    memberModelsArray.push(model);
   });
-  return ret;
+  var requesterModel = new GroupMember({
+    id: requesterId,
+    is_requester: true
+  });
+  memberModelsArray.push(requesterModel);
+  var groupCreated = new Group({
+    members: memberModelsArray
+  });
+  groupCreated.save(function(err){});
 }
 
 const token = "EAAWV1QbgKMMBACBKsgZCPgdK9F3tN03SynQrdLybpRz5OrSVZB7Rvxf9frZCxJZBS6X2ViUBtu0jUQWeAE0DPQYYnQX16Xwakyo36hO0MPZBkOuiPCAZCnHJ5hdzlkZAd7PcFDsZBLw0J33NL6d8uQZA0ZBqUVd5OZA5TFyIhiHFEYJqz1gcs2yqRnS"
