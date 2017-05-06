@@ -35,8 +35,7 @@ app.listen(app.get('port'), function() {
 
 
 app.post('/webhook/', function (req, res) {
-  checkFirstMessage(req);
-  checkSupport(req);
+  checkPayloads(req);
   let messaging_events = req.body.entry[0].messaging
   for (let i = 0; i < messaging_events.length; i++) {
     let event = req.body.entry[0].messaging[i]
@@ -49,27 +48,49 @@ app.post('/webhook/', function (req, res) {
   res.sendStatus(200)
 })
 
-function checkFirstMessage(req){
-  console.log("check first called");
-  try{
-    if(req.body.entry[0].messaging[0].postback.payload === "Get Started"){
-      var options = [];
-      options.push("Help me!");
-      options.push("Offer support");
-      console.log("done pushing");
-      sendOptionMessage(req.body.entry[0].messaging[0].sender.id, options, "What would you like to do?");
-    }
+function checkPayloads(req){
+  var senderId = getSenderIdFromPayload(req);
+  if(senderId == null){
+    return;
   }
-  catch(err){
-
+  if(checkPayload(req, "Get Started")){
+    sendOnboarding(senderId);
+  }
+  else if(checkPayload(req, "Help me!")){
+    helpThem(senderId);
+  }
+  else if(checkPayload(req, "Offer support")){
+    registerSupporter(senderId);
   }
 }
 
-function checkSupport(req){
+function getSenderIdFromPayload(req){
   try{
-    if(req.body.entry[0].messaging[0].postback.payload === "Offer support"){
-      sendTextMessage(req.body.entry[0].messaging[0].sender.id, "Thanks for giving support!");
-    }
+    return req.body.entry[0].messaging[0].sender.id;
+  }
+  catch(err){
+    return null;
+  }
+}
+
+function sendOnboarding(senderId){
+  var options = [];
+  options.push("Help me!");
+  options.push("Offer support");
+  sendOptionMessage(senderId, options, "What would you like to do?");
+}
+
+function helpThem(senderId){
+  sendTextMessage(senderId, "Getting you help!");
+}
+
+function registerSupporter(senderId){
+  sendTextMessage(senderId, "Registering you");
+}
+
+function checkPayload(req, payload){
+  try{
+    return req.body.entry[0].messaging[0].postback.payload === payload;
   }
   catch(err){
 
@@ -81,9 +102,9 @@ function sendOptionMessage(sender, options, title){
   var buttons = [];
   options.forEach(function(option){
     buttons.push({
-        "type" : "postback",
-        "title" : option,
-        "payload" : option
+      "type" : "postback",
+      "title" : option,
+      "payload" : option
     });
   });
   console.log("buttons: " + buttons);
