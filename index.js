@@ -179,17 +179,22 @@ function addToSupports(id) {
 }
 
 function createGroup(senderId) {
-  Supporter.find({}, function(supporterArray){
-    saveGroup(supporterArray, senderId);
-  });
+  var callback = function (err, data) {
+    if (err) { return console.error("GOT DATA: " + err); }
+    else { console.log("GOT DATA: " + data); }
+  }
+  // Supporter.find({}, function(supporterArray){
+  //   saveGroup(supporterArray, senderId);
+  // });
+  Supporter.find({}, callback);
 }
 
 function saveGroup(supporterArray, requesterId){
   var memberModelsArray = [];
   supporterArray.forEach(function(supporter){
     var model = new GroupMember({
-        id: supporter.id,
-        is_requester: false
+      id: supporter.id,
+      is_requester: false
     });
     memberModelsArray.push(model);
   });
