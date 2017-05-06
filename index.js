@@ -181,7 +181,9 @@ function addToSupports(id) {
   Supporter.update(
     {id: id},
     {$setOnInsert: newSupporter},
-    {upsert: true});
+    {upsert: true},
+    function(err, numAffected) {}
+  );
 }
 
 function createGroup(senderId) {
