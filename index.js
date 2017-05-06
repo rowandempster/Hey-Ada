@@ -194,14 +194,13 @@ function createGroup(senderId) {
     }
   }
   var callbackqueryresult = function (err, result) {
-    console.log("Got result group " + result);
-    try{
-      result[0];
-      console.log("GOT RESULT");
-    }
-    catch(err){
+    console.log("Got result group" + result);
+    if(error || result == null){
       console.log("DIDNT GET RESULT");
       Supporter.find({"availability" : true}, callback).limit(4);
+    }
+    else{
+      console.log("GOT RESULT");
     }
   }
   Group.find({ "members": { $elemMatch: {"id" : senderId}} }, callbackqueryresult);
