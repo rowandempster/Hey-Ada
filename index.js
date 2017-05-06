@@ -179,7 +179,7 @@ function addToSupports(id) {
 }
 
 function createGroup(senderId) {
-  Supporter.find({"availability": true}, function(supporterArray){
+  Supporter.find({}, function(supporterArray){
     saveGroup(supporterArray, senderId);
   }).limit(4);
 }
