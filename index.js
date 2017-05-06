@@ -5,6 +5,10 @@ const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
 const util = require('util')
+// Load mongoose package
+var mongoose = require('mongoose');
+// Connect to MongoDB and create/use database called todoAppTest
+mongoose.connect('mongodb://admin:admin@ds133221.mlab.com:33221/ada_db');
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -80,10 +84,12 @@ function sendOnboarding(senderId){
   sendOptionMessage(senderId, options, "What would you like to do?");
 }
 
+//called when a user clicks the "help me" onboarding option
 function helpThem(senderId){
   sendTextMessage(senderId, "Getting you help!");
 }
 
+//called when a user clicks the "register for support" onboarding option
 function registerSupporter(senderId){
   sendTextMessage(senderId, "Registering you");
 }
