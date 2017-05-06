@@ -214,9 +214,13 @@ function saveGroup(supporterArray, requesterId){
 function broadcastTextToGroupIfGroupExists(senderid, text) {
   var callbackqueryresult = function (err, result) {
     console.log("Logging result", result);
-    result[0].members.forEach(function (groupmember) {
-     sendTextMessage(groupmember.id, text)
-    })
+    try{
+      result[0].members.forEach(function (groupmember) {
+       sendTextMessage(groupmember.id, text)
+      })
+  }
+  catch(error){}
+
   }
   console.log("Making a request to the database", senderid)
   Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
