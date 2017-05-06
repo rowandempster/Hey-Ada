@@ -186,7 +186,7 @@ function createGroup(senderId) {
   // Supporter.find({}, function(supporterArray){
   //   saveGroup(supporterArray, senderId);
   // });
-  Supporter.find({}, callback);
+  Supporter.find({"availability" : true}, callback).find(4);
 }
 
 function saveGroup(supporterArray, requesterId){
