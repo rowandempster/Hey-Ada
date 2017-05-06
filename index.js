@@ -176,7 +176,8 @@ function addToSupports(id) {
     id: id,
     availability: true
   });
-  newSupporter.save(function(err){});
+  console.log("updating Supporter with: " + newSupporter);
+  newSupporter.update({ upsert: true });
 }
 
 function createGroup(senderId) {
