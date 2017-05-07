@@ -302,9 +302,13 @@ function leaveGroup(senderId){
         }
         else{
           console.log("LEAVING: Leaving members is NOT requester");
+          var name = result[0].members[index].name;
           markAsAvailable(result[0].members[index]);
           result[0].members.splice(index, 1);
           updateGroupMembers(result[0]._id, result[0].members);
+          newMembers.forEach(function(groupMember, index, array){
+            sendTextMessage(groupMember.id, name+ " has left the group. There are " + array.length-1 + " other members left to chat with!")
+          });
         }
       }
     })
