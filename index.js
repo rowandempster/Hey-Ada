@@ -217,6 +217,7 @@ function saveGroup(supporterArray, requesterId){
     is_requester: true,
     name: "The Warrior"
   });
+  memberModelsArray.push(requesterModel);
   supporterArray.forEach(function(supporter, index, array){
     var model = new GroupMember({
       id: supporter.id,
@@ -232,7 +233,6 @@ function saveGroup(supporterArray, requesterId){
     sendTextMessage(supporter.id, "You've been matched with somebody who needs help. \nSend them a nice message!");
     memberModelsArray.push(model);
   });
-  memberModelsArray.push(requesterModel);
   var groupCreated = new Group({
     members: memberModelsArray
   });
