@@ -290,9 +290,9 @@ function leaveGroup(senderId){
         }
         else{
           console.log("LEAVING: Leaving members is NOT requester");
+          markAsAvailable(result[0].members[index]);
           result[0].members.splice(index, 1);
           updateGroupMembers(result[0]._id, result[0].members);
-          markAsAvailable(result[0].members[index]);
         }
       }
     })
