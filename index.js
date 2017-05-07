@@ -54,6 +54,7 @@ app.post('/webhook/', function (req, res) {
         sendTextMessage(sender, "Thank you for offering support, you will receive a notification when you need help.");
         addToSupports(sender);
       }
+      console.log("sending broadcast");
       broadcastTextToGroupIfGroupExists(sender, text);
     }
   }
@@ -236,6 +237,9 @@ function saveGroup(supporterArray, requesterId){
 function broadcastTextToGroupIfGroupExists(senderid, text) {
   var callbackqueryresult = function (err, result) {
     try{
+      console.log("found members, they are" + result);
+      console.log("found error, they are" + err);
+      console.log("found members, length is" + result.length);
       if(result == null || result.length <1){
         var options = [];
         options.push("Help me!");
@@ -251,6 +255,7 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
     catch(error){}
 
   }
+  console.log("finding group members");
   Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
 }
 
