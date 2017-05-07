@@ -327,7 +327,7 @@ function markAsAvailable(groupMember){
       sendOptionMessage(groupMember.id, ["Help me!", "No"], "Would you like more help?");
     }
     else{
-      sendTextMessage(groupMember.id, "You left the group, please wait until you receive another notification for help. Thank you!");
+      sendTextMessage(groupMember.id, "You left the group/ the group has disbanded, please wait until you receive another notification for help. Thank you!");
     }
   };
   Supporter.update(conditions, update, options, callback);
