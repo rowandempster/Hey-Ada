@@ -218,6 +218,7 @@ function saveGroup(supporterArray, requesterId){
     }, function(err, affected, resp) {
       console.log(resp);
     });
+    
     sendTextMessage(supporter.id, "You've been matched with somebody who needs help. \nSend them a nice message!");
     memberModelsArray.push(model);
   });
