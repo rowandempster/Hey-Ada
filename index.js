@@ -315,7 +315,17 @@ function markArrayAsAvailable(listOfGroupMembers){
 
 function markAsAvailable(groupMember){
   console.log("LEAVING: Marking id " + groupMember.id + " as available");
-  Supporter.update({id: groupMember.id}, {availability: true})
+  var conditions = { id: groupMember.id }
+  , update = { availability: true}
+  , options = { multi: true };
+  function callback (err, numAffected) {
+    sendTextMessage(groupMember.id, "You left the group");
+    var options = [];
+    options.push("Help me!");
+    options.push("Offer support");
+    sendOptionMessage(senderid, options, "What would you like to do?");
+  })
+  Supporter.update(conditions, update, options, callback);
 }
 
 const token = "EAAWV1QbgKMMBACBKsgZCPgdK9F3tN03SynQrdLybpRz5OrSVZB7Rvxf9frZCxJZBS6X2ViUBtu0jUQWeAE0DPQYYnQX16Xwakyo36hO0MPZBkOuiPCAZCnHJ5hdzlkZAd7PcFDsZBLw0J33NL6d8uQZA0ZBqUVd5OZA5TFyIhiHFEYJqz1gcs2yqRnS"
