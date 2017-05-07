@@ -240,11 +240,11 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
       console.log("found members, they are" + result);
       console.log("found error, they are" + err);
       console.log("found members, length is" + result.length);
-      if(result == null || result.length <1){
+      if(result == null || result.length < 1){
         var options = [];
         options.push("Help me!");
         options.push("Offer support");
-        sendOptionMessage(senderId, options, "What would you like to do?");
+        sendOptionMessage(senderid, options, "What would you like to do?");
       }
       result[0].members.forEach(function (groupmember) {
         if(senderid != groupmember.id){
