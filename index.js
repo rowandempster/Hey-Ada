@@ -318,7 +318,7 @@ function markAsAvailable(groupMember){
   var conditions = { id: groupMember.id }
   , update = { availability: true}
   , options = { multi: true };
-  function callback (err, numAffected) {
+  var callback = function(err, numAffected) {
     sendTextMessage(groupMember.id, "You left the group");
     var options = [];
     options.push("Help me!");
