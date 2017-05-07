@@ -59,7 +59,16 @@ app.post('/webhook/', function (req, res) {
         return;
       }
       else if(formattedLeave === "leave"){
-        sendOptionMessage(sender, ["Leave"], "Are you sure you want to leave?");
+        var callbackqueryresult = function (err, result) {
+          if(err || result == null || result.length < 1){
+          }
+          else{
+            sendOptionMessage(sender, ["Leave"], "Are you sure you want to leave?");
+          }
+        }
+        Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
+        res.sendStatus(200);
+        return;
       }
       console.log("sending broadcast");
       broadcastTextToGroupIfGroupExists(sender, text);
