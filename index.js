@@ -50,6 +50,7 @@ app.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text
+      console.log("GOT MESSAGE FROM SENDER: " + sender + " WITH TEXT: " + text);
       if (text === testcode) {
         sendTextMessage(sender, "Thank you for offering support, you will receive a notification when you need help.");
         addToSupports(sender);
