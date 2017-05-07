@@ -51,11 +51,15 @@ app.post('/webhook/', function (req, res) {
     if (event.message && event.message.text) {
       let text = event.message.text
       console.log("GOT MESSAGE FROM SENDER: " + sender + " WITH TEXT: " + text);
+      var formattedLeave = text.trim().toLowerCase();
       if (text === testcode) {
         sendTextMessage(sender, "Thank you for offering support, you will receive a notification when you need help.");
         addToSupports(sender);
         res.sendStatus(200);
         return;
+      }
+      else if(formattedLeave === "leave"){
+        sendOptionMessage(sender, ["Leave"], "Are you sure you want to leave?");
       }
       console.log("sending broadcast");
       broadcastTextToGroupIfGroupExists(sender, text);
@@ -77,6 +81,9 @@ function checkPayloads(req){
   }
   else if(checkPayload(req, "Offer support")){
     registerSupporter(senderId);
+  }
+  else if(checkPayload(req, "Leave")){
+    leaveGroup(senderId);
   }
 }
 
@@ -268,6 +275,30 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
   }
   console.log("finding group members");
   Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
+}
+
+function leaveGroup(senderId){
+  var callback = function (err, result) {
+    result[0].members.forEach(function (groupmember, index, array) {
+      if(senderId == groupmember.id){
+        if(groupmember.is_requester){
+          Group.remove({ _id: result[0]._id }, function(err) {});
+        }
+        else{
+          result[0].members.splice(index, 1);
+          updateGroupMembers(result[0]._id, result[0].members);
+        }
+      }
+    })
+  }
+  Group.find({ "members": { $elemMatch: {"id" : senderId}} }, callback);
+}
+
+function updateGroupMembers(groupId, newMembers){
+  Group.findById(groupId, function (err, group) {
+    group.members = newMembers;
+    group.save(function (err, updatedTank) {});
+  });
 }
 
 const token = "EAAWV1QbgKMMBACBKsgZCPgdK9F3tN03SynQrdLybpRz5OrSVZB7Rvxf9frZCxJZBS6X2ViUBtu0jUQWeAE0DPQYYnQX16Xwakyo36hO0MPZBkOuiPCAZCnHJ5hdzlkZAd7PcFDsZBLw0J33NL6d8uQZA0ZBqUVd5OZA5TFyIhiHFEYJqz1gcs2yqRnS"
