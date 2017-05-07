@@ -85,6 +85,9 @@ function checkPayloads(req){
   else if(checkPayload(req, "Leave")){
     leaveGroup(senderId);
   }
+  else if(checkPayload(req, "No")){
+    sendTextMessage(senderId, "Okay! Come back anytime!")
+  }
 }
 
 function getSenderIdFromPayload(req){
@@ -319,11 +322,13 @@ function markAsAvailable(groupMember){
   , update = { availability: true}
   , options = { multi: true };
   var callback = function(err, numAffected) {
-    sendTextMessage(groupMember.id, "You left the group");
-    var options = [];
-    options.push("Help me!");
-    options.push("Offer support");
-    sendOptionMessage(groupMember.id, options, "What would you like to do?");
+    if(groupMember.is_requester){
+      sendTextMessage(groupMember.id, "You have left the group");
+      sendOptionMessage(groupMember.id, ["Help me!", "No"], "Would you like more help?");
+    }
+    else{
+      sendTextMessage(groupMember.id, "You left the group, please wait until you receive another notification for help. Thank you!");
+    }
   };
   Supporter.update(conditions, update, options, callback);
 }
