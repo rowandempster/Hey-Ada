@@ -279,13 +279,17 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
 
 function leaveGroup(senderId){
   var callback = function (err, result) {
+    console.log("LEAVING: Got group");
     result[0].members.forEach(function (groupmember, index, array) {
       if(senderId == groupmember.id){
+        console.log("LEAVING: Found leaving member");
         if(groupmember.is_requester){
+          console.log("LEAVING: Leaving members is requester");
           Group.remove({ _id: result[0]._id }, function(err) {});
           markArrayAsAvailable(result[0].members);
         }
         else{
+          console.log("LEAVING: Leaving members is NOT requester");
           result[0].members.splice(index, 1);
           updateGroupMembers(result[0]._id, result[0].members);
           markAsAvailable(result[0].members[index]);
@@ -310,6 +314,7 @@ function markArrayAsAvailable(listOfGroupMembers){
 }
 
 function markAsAvailable(groupMember){
+  console.log("LEAVING: Marking id " + groupMember.id + " as available");
   Supporter.update({id: groupMember.id}, {availability: true})
 }
 
