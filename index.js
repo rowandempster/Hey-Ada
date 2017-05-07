@@ -212,12 +212,6 @@ function createGroup(senderId) {
 
 function saveGroup(supporterArray, requesterId){
   var memberModelsArray = [];
-  var requesterModel = new GroupMember({
-    id: requesterId,
-    is_requester: true,
-    name: "The Warrior"
-  });
-  memberModelsArray.push(requesterModel);
   supporterArray.forEach(function(supporter, index, array){
     var model = new GroupMember({
       id: supporter.id,
@@ -233,6 +227,12 @@ function saveGroup(supporterArray, requesterId){
     sendTextMessage(supporter.id, "You've been matched with somebody who needs help. \nSend them a nice message!");
     memberModelsArray.push(model);
   });
+  var requesterModel = new GroupMember({
+    id: requesterId,
+    is_requester: true,
+    name: "The Warrior"
+  });
+  memberModelsArray.push(requesterModel);
   var groupCreated = new Group({
     members: memberModelsArray
   });
@@ -251,9 +251,15 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
         options.push("Offer support");
         sendOptionMessage(senderid, options, "What would you like to do?");
       }
+      var senderName;
+      result[0].members.forEach(function (groupmember) {
+        if(senderid == groupmember.id){
+          senderName = groupmember.name;
+        }
+      })
       result[0].members.forEach(function (groupmember) {
         if(senderid != groupmember.id){
-          sendTextMessage(groupmember.id, groupmember.name + ": " +text);
+          sendTextMessage(groupmember.id,  senderName+": " +text);
         }
       })
     }
