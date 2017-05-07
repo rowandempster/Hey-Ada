@@ -66,7 +66,7 @@ app.post('/webhook/', function (req, res) {
             sendOptionMessage(sender, ["Leave"], "Are you sure you want to leave?");
           }
         }
-        Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
+        Group.find({ "members": { $elemMatch: {"id" : sender}} }, callbackqueryresult);
         res.sendStatus(200);
         return;
       }
