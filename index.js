@@ -236,7 +236,9 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
     console.log("Logging result", result);
     try{
       result[0].members.forEach(function (groupmember) {
-        sendTextMessage(groupmember.id, text)
+        if(senderid != groupmember.id){
+          sendTextMessage(groupmember.id, text)
+        }
       })
     }
     catch(error){}
