@@ -323,7 +323,7 @@ function markAsAvailable(groupMember){
     var options = [];
     options.push("Help me!");
     options.push("Offer support");
-    sendOptionMessage(senderid, options, "What would you like to do?");
+    sendOptionMessage(groupMember.id, options, "What would you like to do?");
   };
   Supporter.update(conditions, update, options, callback);
 }
