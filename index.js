@@ -54,6 +54,7 @@ app.post('/webhook/', function (req, res) {
       if (text === testcode) {
         sendTextMessage(sender, "Thank you for offering support, you will receive a notification when you need help.");
         addToSupports(sender);
+        res.sendStatus(200);
         return;
       }
       console.log("sending broadcast");
