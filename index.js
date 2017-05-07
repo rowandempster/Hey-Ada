@@ -236,6 +236,12 @@ function saveGroup(supporterArray, requesterId){
 function broadcastTextToGroupIfGroupExists(senderid, text) {
   var callbackqueryresult = function (err, result) {
     try{
+      if(result == null || result.length <1){
+        var options = [];
+        options.push("Help me!");
+        options.push("Offer support");
+        sendOptionMessage(senderId, options, "What would you like to do?");
+      }
       result[0].members.forEach(function (groupmember) {
         if(senderid != groupmember.id){
           sendTextMessage(groupmember.id, text)
