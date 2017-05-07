@@ -59,7 +59,16 @@ app.post('/webhook/', function (req, res) {
         return;
       }
       else if(formattedLeave === "leave"){
-        sendOptionMessage(sender, ["Leave"], "Are you sure you want to leave?");
+        var callbackqueryresult = function (err, result) {
+          if(err || result == null || result.length < 1){
+          }
+          else{
+            sendOptionMessage(sender, ["Leave"], "Are you sure you want to leave?");
+          }
+        }
+        Group.find({ "members": { $elemMatch: {"id" : sender}} }, callbackqueryresult);
+        res.sendStatus(200);
+        return;
       }
       console.log("sending broadcast");
       broadcastTextToGroupIfGroupExists(sender, text);
@@ -84,6 +93,9 @@ function checkPayloads(req){
   }
   else if(checkPayload(req, "Leave")){
     leaveGroup(senderId);
+  }
+  else if(checkPayload(req, "No")){
+    sendTextMessage(senderId, "Okay! Come back anytime!")
   }
 }
 
@@ -279,14 +291,24 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
 
 function leaveGroup(senderId){
   var callback = function (err, result) {
+    console.log("LEAVING: Got group");
     result[0].members.forEach(function (groupmember, index, array) {
       if(senderId == groupmember.id){
+        console.log("LEAVING: Found leaving member");
         if(groupmember.is_requester){
+          console.log("LEAVING: Leaving members is requester");
           Group.remove({ _id: result[0]._id }, function(err) {});
+          markArrayAsAvailable(result[0].members);
         }
         else{
+          console.log("LEAVING: Leaving members is NOT requester");
+          var name = result[0].members[index].name;
+          markAsAvailable(result[0].members[index]);
           result[0].members.splice(index, 1);
           updateGroupMembers(result[0]._id, result[0].members);
+          result[0].members.forEach(function(groupMember, index, array){
+            sendTextMessage(groupMember.id, name + " has left the group. There are " + (array.length-1) + " other members left to chat with!")
+          });
         }
       }
     })
@@ -299,6 +321,29 @@ function updateGroupMembers(groupId, newMembers){
     group.members = newMembers;
     group.save(function (err, updatedTank) {});
   });
+}
+
+function markArrayAsAvailable(listOfGroupMembers){
+  listOfGroupMembers.forEach(function(groupMember){
+    markAsAvailable(groupMember);
+  })
+}
+
+function markAsAvailable(groupMember){
+  console.log("LEAVING: Marking id " + groupMember.id + " as available");
+  var conditions = { id: groupMember.id }
+  , update = { availability: true}
+  , options = { multi: true };
+  var callback = function(err, numAffected) {
+    if(groupMember.is_requester){
+      sendTextMessage(groupMember.id, "You have left the group");
+      sendOptionMessage(groupMember.id, ["Help me!", "No"], "Would you like more help?");
+    }
+    else{
+      sendTextMessage(groupMember.id, "You left the group/ the group has disbanded, please wait until you receive another notification for help. Thank you!");
+    }
+  };
+  Supporter.update(conditions, update, options, callback);
 }
 
 const token = "EAAWV1QbgKMMBACBKsgZCPgdK9F3tN03SynQrdLybpRz5OrSVZB7Rvxf9frZCxJZBS6X2ViUBtu0jUQWeAE0DPQYYnQX16Xwakyo36hO0MPZBkOuiPCAZCnHJ5hdzlkZAd7PcFDsZBLw0J33NL6d8uQZA0ZBqUVd5OZA5TFyIhiHFEYJqz1gcs2yqRnS"
