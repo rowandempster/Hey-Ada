@@ -283,10 +283,12 @@ function leaveGroup(senderId){
       if(senderId == groupmember.id){
         if(groupmember.is_requester){
           Group.remove({ _id: result[0]._id }, function(err) {});
+          markArrayAsAvailable(result[0].members);
         }
         else{
           result[0].members.splice(index, 1);
           updateGroupMembers(result[0]._id, result[0].members);
+          markAsAvailable(result[0].members[index]);
         }
       }
     })
@@ -299,6 +301,16 @@ function updateGroupMembers(groupId, newMembers){
     group.members = newMembers;
     group.save(function (err, updatedTank) {});
   });
+}
+
+function markArrayAsAvailable(listOfGroupMembers){
+  listOfGroupMembers.forEach(function(groupMember){
+    markAsAvailable(groupMember);
+  })
+}
+
+function markAsAvailable(groupMember){
+  Supporter.update({id: groupMember.id}, {availability: true})
 }
 
 const token = "EAAWV1QbgKMMBACBKsgZCPgdK9F3tN03SynQrdLybpRz5OrSVZB7Rvxf9frZCxJZBS6X2ViUBtu0jUQWeAE0DPQYYnQX16Xwakyo36hO0MPZBkOuiPCAZCnHJ5hdzlkZAd7PcFDsZBLw0J33NL6d8uQZA0ZBqUVd5OZA5TFyIhiHFEYJqz1gcs2yqRnS"
