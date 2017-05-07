@@ -324,7 +324,7 @@ function markAsAvailable(groupMember){
     options.push("Help me!");
     options.push("Offer support");
     sendOptionMessage(senderid, options, "What would you like to do?");
-  })
+  };
   Supporter.update(conditions, update, options, callback);
 }
 
