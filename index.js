@@ -212,6 +212,11 @@ function createGroup(senderId) {
 
 function saveGroup(supporterArray, requesterId){
   var memberModelsArray = [];
+  var requesterModel = new GroupMember({
+    id: requesterId,
+    is_requester: true,
+    name: "The Warrior"
+  });
   supporterArray.forEach(function(supporter, index, array){
     var model = new GroupMember({
       id: supporter.id,
@@ -226,11 +231,6 @@ function saveGroup(supporterArray, requesterId){
     console.log("Sending new group notif to :" + supporter.id);
     sendTextMessage(supporter.id, "You've been matched with somebody who needs help. \nSend them a nice message!");
     memberModelsArray.push(model);
-  });
-  var requesterModel = new GroupMember({
-    id: requesterId,
-    is_requester: true,
-    name: "The Warrior"
   });
   memberModelsArray.push(requesterModel);
   var groupCreated = new Group({
