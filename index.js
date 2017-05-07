@@ -277,7 +277,7 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
   Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
 }
 
-function leave(senderId){
+function leaveGroup(senderId){
   var callback = function (err, result) {
     result[0].members.forEach(function (groupmember, index, array) {
       if(senderId == groupmember.id){
