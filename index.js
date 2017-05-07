@@ -220,7 +220,7 @@ function createGroup(senderId) {
     console.log("Got error" + err);
     if(err || result == null || result.length < 1){
       console.log("DIDNT GET RESULT");
-      Supporter.find({"availability" : true}, callback).limit(2);
+      Supporter.find({"availability" : true}, callback).limit(3);
     }
     else{
       console.log("GOT RESULT");
