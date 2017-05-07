@@ -214,11 +214,11 @@ function saveGroup(supporterArray, requesterId){
       is_requester: false
     });
     Supporter.update({id: supporter.id}, {
-      availability: false,
+      "availability": false,
     }, function(err, affected, resp) {
       console.log(resp);
     });
-    
+    console.log("Sending new group notif to :" + supporter.id);
     sendTextMessage(supporter.id, "You've been matched with somebody who needs help. \nSend them a nice message!");
     memberModelsArray.push(model);
   });
@@ -235,7 +235,6 @@ function saveGroup(supporterArray, requesterId){
 
 function broadcastTextToGroupIfGroupExists(senderid, text) {
   var callbackqueryresult = function (err, result) {
-    console.log("Logging result", result);
     try{
       result[0].members.forEach(function (groupmember) {
         if(senderid != groupmember.id){
@@ -246,7 +245,6 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
     catch(error){}
 
   }
-  console.log("Making a request to the database", senderid)
   Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
 }
 
