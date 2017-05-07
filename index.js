@@ -198,7 +198,7 @@ function createGroup(senderId) {
     console.log("Got error" + err);
     if(err || result == null || result.length < 1){
       console.log("DIDNT GET RESULT");
-      Supporter.find({"availability" : true}, callback).limit(4);
+      Supporter.find({"availability" : true}, callback).limit(2);
     }
     else{
       console.log("GOT RESULT");
@@ -213,6 +213,11 @@ function saveGroup(supporterArray, requesterId){
     var model = new GroupMember({
       id: supporter.id,
       is_requester: false
+    });
+    Supporter.update({id: supporter.id}, {
+      availability: false,
+    }, function(err, affected, resp) {
+      console.log(resp);
     });
     memberModelsArray.push(model);
   });
