@@ -307,7 +307,7 @@ function leaveGroup(senderId){
           result[0].members.splice(index, 1);
           updateGroupMembers(result[0]._id, result[0].members);
           result[0].members.forEach(function(groupMember, index, array){
-            sendTextMessage(groupMember.id, name+ " has left the group. There are " + array.length-1 + " other members left to chat with!")
+            sendTextMessage(groupMember.id, "" + name+ " has left the group. There are " + array.length-1 + " other members left to chat with!")
           });
         }
       }
