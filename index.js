@@ -14,6 +14,8 @@ var Group = require('./models/Group.js');
 // Connect to MongoDB and create/use database called todoAppTest
 mongoose.connect('mongodb://admin:admin@ds133221.mlab.com:33221/ada_db');
 
+const names = ["Ali", "Shea", "Kasey", "Jesse"];
+
 app.set('port', (process.env.PORT || 5000))
 
 // Process application/x-www-form-urlencoded
@@ -39,8 +41,6 @@ app.get('/webhook/', function (req, res) {
 app.listen(app.get('port'), function() {
   console.log('running on port', app.get('port'))
 })
-
-
 
 app.post('/webhook/', function (req, res) {
   checkPayloads(req);
@@ -212,10 +212,11 @@ function createGroup(senderId) {
 
 function saveGroup(supporterArray, requesterId){
   var memberModelsArray = [];
-  supporterArray.forEach(function(supporter){
+  supporterArray.forEach(function(supporter, index, array){
     var model = new GroupMember({
       id: supporter.id,
-      is_requester: false
+      is_requester: false,
+      name: names[index]
     });
     Supporter.update({id: supporter.id}, {
       "availability": false,
@@ -228,7 +229,8 @@ function saveGroup(supporterArray, requesterId){
   });
   var requesterModel = new GroupMember({
     id: requesterId,
-    is_requester: true
+    is_requester: true,
+    name: "The Warrior"
   });
   memberModelsArray.push(requesterModel);
   var groupCreated = new Group({
@@ -251,7 +253,7 @@ function broadcastTextToGroupIfGroupExists(senderid, text) {
       }
       result[0].members.forEach(function (groupmember) {
         if(senderid != groupmember.id){
-          sendTextMessage(groupmember.id, text)
+          sendTextMessage(groupmember.id, groupmember.name + ": " +text);
         }
       })
     }
