@@ -14,6 +14,8 @@ var Group = require('./models/Group.js');
 // Connect to MongoDB and create/use database called todoAppTest
 mongoose.connect('mongodb://admin:admin@ds133221.mlab.com:33221/ada_db');
 
+const names = ["Ali", "Shea", "Kasey", "Jesse"];
+
 app.set('port', (process.env.PORT || 5000))
 
 // Process application/x-www-form-urlencoded
@@ -40,8 +42,6 @@ app.listen(app.get('port'), function() {
   console.log('running on port', app.get('port'))
 })
 
-
-
 app.post('/webhook/', function (req, res) {
   checkPayloads(req);
   let messaging_events = req.body.entry[0].messaging
@@ -50,12 +50,15 @@ app.post('/webhook/', function (req, res) {
     let sender = event.sender.id
     if (event.message && event.message.text) {
       let text = event.message.text
+      console.log("GOT MESSAGE FROM SENDER: " + sender + " WITH TEXT: " + text);
       if (text === testcode) {
         sendTextMessage(sender, "Thank you for offering support, you will receive a notification when you need help.");
         addToSupports(sender);
+        res.sendStatus(200);
+        return;
       }
+      console.log("sending broadcast");
       broadcastTextToGroupIfGroupExists(sender, text);
-      sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200));
     }
   }
   res.sendStatus(200)
@@ -177,32 +180,57 @@ function addToSupports(id) {
     availability: true
   });
   console.log("updating Supporter with: " + newSupporter);
-  newSupporter.update({ upsert: true });
+
+  Supporter.update(
+    {id: id},
+    {$setOnInsert: newSupporter},
+    {upsert: true},
+    function(err, numAffected) {}
+  );
 }
 
 function createGroup(senderId) {
   var callback = function (err, data) {
-    if (err) { return console.error("GOT DATA: " + err); }
+    if (err) { }
     else {
-      console.log("GOT DATA: " + data);
       saveGroup(data, senderId);
     }
   }
-  Supporter.find({"availability" : true}, callback).limit(4);
+  var callbackqueryresult = function (err, result) {
+    console.log("Got result group" + result);
+    console.log("Got error" + err);
+    if(err || result == null || result.length < 1){
+      console.log("DIDNT GET RESULT");
+      Supporter.find({"availability" : true}, callback).limit(2);
+    }
+    else{
+      console.log("GOT RESULT");
+    }
+  }
+  Group.find({ "members": { $elemMatch: {"id" : senderId}} }, callbackqueryresult);
 }
 
 function saveGroup(supporterArray, requesterId){
   var memberModelsArray = [];
-  supporterArray.forEach(function(supporter){
+  supporterArray.forEach(function(supporter, index, array){
     var model = new GroupMember({
       id: supporter.id,
-      is_requester: false
+      is_requester: false,
+      name: names[index]
     });
+    Supporter.update({id: supporter.id}, {
+      "availability": false,
+    }, function(err, affected, resp) {
+      console.log(resp);
+    });
+    console.log("Sending new group notif to :" + supporter.id);
+    sendTextMessage(supporter.id, "You've been matched with somebody who needs help. \nSend them a nice message!");
     memberModelsArray.push(model);
   });
   var requesterModel = new GroupMember({
     id: requesterId,
-    is_requester: true
+    is_requester: true,
+    name: "The Warrior"
   });
   memberModelsArray.push(requesterModel);
   var groupCreated = new Group({
@@ -213,16 +241,32 @@ function saveGroup(supporterArray, requesterId){
 
 function broadcastTextToGroupIfGroupExists(senderid, text) {
   var callbackqueryresult = function (err, result) {
-    console.log("Logging result", result);
     try{
+      console.log("found members, they are" + result);
+      console.log("found error, they are" + err);
+      console.log("found members, length is" + result.length);
+      if(result == null || result.length < 1){
+        var options = [];
+        options.push("Help me!");
+        options.push("Offer support");
+        sendOptionMessage(senderid, options, "What would you like to do?");
+      }
+      var senderName;
       result[0].members.forEach(function (groupmember) {
-       sendTextMessage(groupmember.id, text)
+        if(senderid == groupmember.id){
+          senderName = groupmember.name;
+        }
       })
-  }
-  catch(error){}
+      result[0].members.forEach(function (groupmember) {
+        if(senderid != groupmember.id){
+          sendTextMessage(groupmember.id,  senderName+": " +text);
+        }
+      })
+    }
+    catch(error){}
 
   }
-  console.log("Making a request to the database", senderid)
+  console.log("finding group members");
   Group.find({ "members": { $elemMatch: {"id" : senderid}} }, callbackqueryresult);
 }
 
